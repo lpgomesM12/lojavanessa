@@ -1,0 +1,100 @@
+<%= form_for(@produto) do |f| %>
+  <% if @produto.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@produto.errors.count, "error") %> prohibited this produto from being saved:</h2>
+
+      <ul>
+      <% @produto.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Produtos</h3>
+  </div>
+  <div class="panel-body">
+
+<div class="row">
+  <div class="col-lg-5">
+    <%= f.label :Categoria %><br>
+    <%= f.select :categoriaproduto_id, options_from_collection_for_select(Categoriaproduto.all, 'id',  'nome', @produto.categoriaproduto_id),{:include_blank => true}, {:class => 'form-control'} %>
+   </div>
+   <div class="col-lg-5">
+     <%= f.label :cor_id %><br>
+     <%= f.select :cor_id, options_from_collection_for_select(Cor.all, 'id',  'nome', @produto.cor_id),{:include_blank => true}, {:class => 'form-control'} %>
+   </div>
+</div>
+
+<br>
+<div class="row">
+  <div class="col-lg-5">
+    <%= f.label :nome_produto %><br>
+    <%= f.text_field :nome_produto, :class => 'form-control' %>
+  </div>
+  <div class="col-lg-2">
+    <%= f.label :valor_compra %><br>
+    <%= f.text_field :valr_compra, :class => 'form-control' %>
+   </div>
+    <div class="col-lg-2">
+     <%= f.label :valor_sugerido_venda %><br>
+     <%= f.text_field :valr_sugeridovenda, :class => 'form-control' %>
+   </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-lg-5">
+    <%= f.label :descricao_produto %><br>
+    <%= f.text_area :desc_produto, :class => 'form-control' %>
+  </div>
+</div>
+ <br> 
+
+
+ <div class="row ">
+    <%= f.fields_for :fotoproduto do |fotoproduto|%>
+        <%if fotoproduto.object.new_record? %>
+      <div class="row">
+        <div class="col-lg-6" >
+            <%= fotoproduto.file_field :image%>
+         </div>
+       </div>
+        <%end%>
+    <%end%>
+  </div>
+  
+<br>
+
+<h4>Imagens do Produto</h4>
+<%=f.fields_for :fotoproduto do |foto|%>
+  <% unless foto.object.new_record? %>
+   <%= link_to image_tag(foto.object.image.url(:thumb)),
+        foto.object.image.url(:original)%>
+  <%end%>
+ <%end%>
+
+</div>
+</div>
+
+
+<div class="btn-group">
+  <button type="submit" value="Submit" class="btn btn-primary btn-sm">
+  <span class="glyphicon glyphicon-floppy-disk"></span> Salvar
+  </button>
+  <%= link_to produtos_path, :class => "btn btn-default btn-sm" do %>
+      <span class="glyphicon glyphicon-arrow-left"></span> Voltar
+    <% end %>
+</div>
+
+<% end %>
+
+
+<script type="text/javascript">
+   $(function() {
+     $("#produto_valr_compra").maskMoney({showSymbol:true, symbol:"R$", decimal:",", thousands:"."});
+     $("#produto_valr_sugeridovenda").maskMoney({showSymbol:true, symbol:"R$", decimal:",", thousands:"."});
+  })
+</script>

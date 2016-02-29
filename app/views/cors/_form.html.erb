@@ -1,0 +1,21 @@
+<%= form_for(@cor) do |f| %>
+  <% if @cor.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@cor.errors.count, "error") %> prohibited this cor from being saved:</h2>
+
+      <ul>
+      <% @cor.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :nome %><br>
+    <%= f.text_field :nome %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

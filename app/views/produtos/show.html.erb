@@ -1,0 +1,225 @@
+<p id="notice"><%= notice %></p>
+
+<div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Produto</h3>
+      </div>
+ <div class="panel-body">
+
+<p>
+  <strong>Categoria:</strong>
+  <%= @produto.categoriaproduto.nome %>
+</p>
+
+<p>
+  <strong>Produto:</strong>
+  <%= @produto.nome_produto %>
+</p>
+
+<p>
+  <strong>Descrição:</strong>
+  <%= @produto.desc_produto %>
+</p>
+
+<p>
+  <strong>Valor compra:</strong>
+  <%= @produto.valr_compra %>
+</p>
+
+<p>
+  <strong>Valor Sugerido Para Venda:</strong>
+  <%= @produto.valr_sugeridovenda %>
+</p>
+
+<p>
+  <strong>Cor:</strong>
+  <%= @produto.cor.nome %>
+</p>
+
+<hr>
+ <h4>Estoque</h4>
+
+<%= fields_for :exemplaresproduto do |exempla| %>
+    <div class="row">  
+    <div class="col-lg-2">
+      <%= exempla.label :Numeracao %><br>
+      <%= exempla.text_field :numr_numeracao, :class => 'form-control' %>
+    </div>
+    <div class="col-lg-2">
+      <%= exempla.label :Quantidade %><br>
+      <%= exempla.text_field :numr_quantidade, :class => 'form-control' %>
+    </div> 
+    
+    <div class="col-lg-2">
+        <lebel></lebel><br>
+        <button class="btn btn-default" id="btnItem" class="form-control" name="btnItem" onclick="add_exemplares()" type="button">Incluir
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+     </div>       
+</div>
+ <%end%>
+
+<hr>
+
+ <div class="row">
+     <div class="col-lg-12">
+   <table class="table table-hover table-bordered table-condensed">
+        <thead>
+          <tr>
+               <th>Numeração</th>
+               <th>Qtd. Estoque</th>
+          </tr>
+        </tr>
+
+        </thead>
+        <tbody id="tbExem">
+
+        </tbody>
+      </table>
+    </div>
+</div>
+
+<hr>
+<div class="row mar-bot40">
+  <ul>
+    <%for fotoproduto in @produto.fotoproduto %>
+    <div class="col-lg-4" >
+      <li><%= link_to image_tag(fotoproduto.image.url(:thumb))%></li>
+    </div>
+    <%end%>
+  </ul>
+</div>
+
+ </div>
+</div>
+
+<div class="btn-group">          
+  <%= link_to edit_produto_path(@produto), :class => "btn btn-default btn-sm" do %>
+    <span class="glyphicon glyphicon-pencil"></span> Editar
+  <% end %>
+  <%= link_to produtos_path, :class => "btn btn-default btn-sm" do %>
+    <span class="glyphicon glyphicon-arrow-left"></span> Voltar
+  <% end %>       
+</div>
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-sm">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Editar Exemplar</h4>
+      </div>
+      <div class="modal-body">
+
+     <input type="hidden" name="idExemplar" id="idExemplar" >
+    <div class="row">
+      <div class="col-lg-12">
+          <label for="numr_numeracao"> Numeração</label>
+          <input type="text" id="numr_numeracao" class="form-control" aria-label="...">            
+      </div>
+      <br>
+      <div class="col-lg-12">
+          <label> Quantidade</label>
+          <input type="text" id="numr_quantidade" class="form-control" aria-label="...">            
+      </div>
+    </div>      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="editar_exemplar();" data-dismiss="modal">Salvar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  
+  function add_exemplares(){
+        $.ajax({
+          url: '<%= salvaexemplares_path %>',
+          data : {
+            numr_numeracao : $("#exemplaresproduto_numr_numeracao").val(),
+            numr_quantidade : $("#exemplaresproduto_numr_quantidade").val(),
+            produto_id : '<%= @produto.id%>'
+            
+          },
+          success: function(data){
+               carrega_exemplares();
+          }
+        })
+    }
+  
+  function carrega_exemplares(){
+     $.ajax({
+          url: '<%= carregaexemplares_path %>',
+          data : {
+            produto_id : '<%= @produto.id%>'
+          },
+          success: function(data){
+             $("#tbExem").empty();
+            for (var i in data) {
+              var item = data[i];
+                $( "#tbExem" ).append( "<tr><td>"+item.numr_numeracao+"</td>"+
+                                       "<td>"+item.numr_quantidade+"</td>"+
+                                       "<td Align='right'><button type='button' onclick='busca_exemplar("+item.id+")' class='btn btn-default btn-xs' aria-label='Left Align'>" +
+                                       "<span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>"+
+                                       "<button type='button' onclick='exclui_exemplar("+item.id+")' class='btn btn-default btn-xs' aria-label='Left Align'>" +
+                                       "<span class='glyphicon glyphicon-trash' aria-hidden='true'></span></button></td>" +
+                                    "</tr>" );
+             };
+          }
+        })
+   }
+
+  function busca_exemplar(id){
+        $.ajax({
+          url: '<%= buscaexemplar_path %>',
+          data : {
+            id : id,
+          },
+          success: function(data){
+                
+                $("#idExemplar").val(data.id);
+                $("#numr_numeracao").val(data.numr_numeracao);
+                $("#numr_quantidade").val(data.numr_quantidade);
+                $('#myModal').modal('show');
+          }
+        })
+    }
+
+
+  function editar_exemplar(){
+        $.ajax({
+          url: '<%= editarexemplar_path %>',
+          data : {
+            id : $("#idExemplar").val(),
+            numr_numeracao : $("#numr_numeracao").val(),
+            numr_quantidade : $("#numr_quantidade").val()
+          },
+          success: function(data){
+             $('#myModal').modal('hide');
+              carrega_exemplares();
+          }
+        })
+    }
+
+  function exclui_exemplar(id){
+        $.ajax({
+          url: '<%= excluiexemplare_path %>',
+          data : {
+            id : id,
+          },
+          success: function(data){
+               carrega_exemplares();
+          }
+        })
+    }
+
+carrega_exemplares();
+
+</script>

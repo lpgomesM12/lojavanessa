@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  nome_produto: MyString
+  desc_produto: MyString
+  valr_compra: 9.99
+  valr_sugeridovenda: 9.99
+  categoriaproduto_id: 
+  cor_id: 
+
+two:
+  nome_produto: MyString
+  desc_produto: MyString
+  valr_compra: 9.99
+  valr_sugeridovenda: 9.99
+  categoriaproduto_id: 
+  cor_id: 
